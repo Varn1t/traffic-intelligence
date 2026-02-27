@@ -90,13 +90,13 @@ traffic-intelligence/
 
 ---
 
-## 📄 License
 
-MIT License — free to use and modify.
+© 2026 Varn1t. All rights reserved.
 
 ---
 
 *Built by Varnit*
+
 
 
 
