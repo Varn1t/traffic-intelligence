@@ -23,6 +23,8 @@ A professional-grade real-time traffic analysis system built with **YOLOv8**, **
 
 ---
 
+![Dashboard Preview](dashboard.png)
+
 ## 🚀 Getting Started
 
 ### 1. Clone the repo
@@ -95,4 +97,5 @@ MIT License — free to use and modify.
 ---
 
 *Built by Varnit*
+
 
