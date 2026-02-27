@@ -4,6 +4,8 @@ A professional-grade real-time traffic analysis system built with **YOLOv8**, **
 
 ---
 
+![Website Preview](image.png)
+
 ## ✨ Features
 
 | Feature | Description |
@@ -93,3 +95,4 @@ MIT License — free to use and modify.
 ---
 
 *Built by Varnit*
+
