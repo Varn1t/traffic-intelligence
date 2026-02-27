@@ -1,0 +1,43 @@
+# ── Credentials (NEVER commit this) ──
+.env
+
+# ── Video files (too large for GitHub) ──
+*.mp4
+*.avi
+*.mkv
+*.mov
+
+# ── YOLO model weights ──
+*.pt
+*.onnx
+
+# ── Traffic logs ──
+*.csv
+traffic_log_*.csv
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── Virtual environments ──
+venv/
+env/
+.venv/
+
+# ── IDEs ──
+.vscode/
+.idea/
+*.suo
+*.user
+
+# ── OS files ──
+.DS_Store
+Thumbs.db
+desktop.ini
