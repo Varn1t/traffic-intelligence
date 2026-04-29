@@ -15,6 +15,9 @@
 *.csv
 traffic_log_*.csv
 
+# ── Output Images ──
+*.png
+
 # ── Python ──
 __pycache__/
 *.py[cod]

@@ -4,8 +4,6 @@ A professional-grade real-time traffic analysis system built with **YOLOv8**, **
 
 ---
 
-![Website Preview](image.png)
-
 ## ✨ Features
 
 | Feature | Description |
@@ -22,8 +20,6 @@ A professional-grade real-time traffic analysis system built with **YOLOv8**, **
 | 🔐 Auth-Protected Dashboard | Login-gated live dashboard with session management |
 
 ---
-
-![Dashboard Preview](Dashboard.png)
 
 ## 🚀 Getting Started
 
@@ -50,14 +46,14 @@ DASH_PASS=your_password
 ```
 
 ### 4. Add your video file
-Place your traffic video in the project folder and update `VIDEO_PATH` in `traffic_v2.py`:
+Place your traffic video in the project folder and update `VIDEO_PATH` in `config.py`:
 ```python
 VIDEO_PATH = "your_video.mp4"
 ```
 
 ### 5. Run
 ```bash
-python traffic_v2.py
+python main.py
 ```
 
 Then open **http://localhost:5050** in your browser.
@@ -72,6 +68,7 @@ Then open **http://localhost:5050** in your browser.
 - **OpenCV** — video processing & heatmap
 - **Flask** — web server & REST API
 - **Chart.js** — live dashboard charts
+- **scikit-learn** — Random Forest traffic prediction
 
 ---
 
@@ -79,7 +76,13 @@ Then open **http://localhost:5050** in your browser.
 
 ```
 traffic-intelligence/
-├── traffic_v2.py       # Main application
+├── main.py             # Main entry point & video processing loop
+├── config.py           # Configuration variables and thresholds
+├── state.py            # Thread-safe shared state & stats tracking
+├── loggers.py          # Logging classes (CSV, SpeedCamera)
+├── analytics.py        # Core logic: ML predictor, incident detection, flow rates
+├── templates.py        # UI: Dashboard and landing page HTML
+├── web_app.py          # Flask application logic
 ├── requirements.txt    # Python dependencies
 ├── .env.example        # Credential template (copy → .env)
 ├── .gitignore
@@ -90,13 +93,10 @@ traffic-intelligence/
 
 ---
 
+## 📄 License
 
-© 2026 Varn1t. All rights reserved.
+MIT License — free to use and modify.
 
 ---
 
 *Built by Varnit*
-
-
-
-
