@@ -95,7 +95,7 @@ traffic-intelligence/
 
 ## 📄 License
 
-MIT License — free to use and modify.
+All rights reserved by Varn1t
 
 ---
 
