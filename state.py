@@ -40,6 +40,8 @@ _ss_total_inc:     int  = 0
 _ss_wrong_ids:     set  = set()
 _ss_tailgate:      int  = 0
 _ss_start:         str  = datetime.now().isoformat(timespec="seconds")
+_ss_speeders:      int  = 0
+_ss_ended:         bool = False
 
 # Convenience namespace so callers use session_stats["key"] syntax
 class _SessionStats:
@@ -65,6 +67,14 @@ class _SessionStats:
     def tailgate_events(self, v): global _ss_tailgate; _ss_tailgate = v
     @property
     def session_start(self):   return _ss_start
+    @property
+    def speeders_count(self):  return _ss_speeders
+    @speeders_count.setter
+    def speeders_count(self, v): global _ss_speeders; _ss_speeders = v
+    @property
+    def session_ended(self):   return _ss_ended
+    @session_ended.setter
+    def session_ended(self, v): global _ss_ended; _ss_ended = v
     def __getitem__(self, k):  return getattr(self, k)
     def __setitem__(self, k, v): setattr(self, k, v)
 

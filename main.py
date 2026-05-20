@@ -8,7 +8,7 @@ Resume-highlight features added:
   4. CSV data logging                 (analytics-ready output)
   5. Speed calibration                (pixel-to-meter via reference line)
 
-Run:   python traffic_v2.py
+Run:   python main.py
 Dash:  http://localhost:5050
 Deps:  pip install ultralytics supervision flask opencv-python numpy
 """
@@ -45,6 +45,8 @@ from web_app import run_flask
 lanes = []
 drawing, ix, iy = False, -1, -1
 selecting = True
+frame = None
+
 
 def draw_rectangle(event, x, y, flags, param):
     global ix, iy, drawing, lanes, frame
@@ -473,6 +475,7 @@ def main():
             # Keep last 10 speeding events
             if frame_speeders:
                 shared_state["speeders"] = (shared_state["speeders"] + frame_speeders)[-10:]
+                session_stats.speeders_count += len(frame_speeders)
 
         # ── LOG EVERY 30 FRAMES ──
         if frame_id % 30 == 0:
@@ -525,6 +528,9 @@ def main():
     print(f"  Heatmap         : heatmap_export.png")
     print("═" * 56)
     print()
+
+    # Signal dashboard to auto-show summary modal
+    session_stats.session_ended = True
 
 if __name__ == "__main__":
     main()

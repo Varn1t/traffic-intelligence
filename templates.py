@@ -3,7 +3,7 @@ DASHBOARD_HTML = """
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Traffic Intelligence</title>
+  <title>TraffiQ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -166,6 +166,54 @@ DASHBOARD_HTML = """
     ::-webkit-scrollbar-track{background:var(--bg)}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
     ::-webkit-scrollbar-thumb:hover{background:#a855f780}
+
+    /* ── SESSION SUMMARY MODAL ── */
+    .sum-overlay{display:none;position:fixed;inset:0;z-index:999;
+      background:rgba(8,6,14,.88);backdrop-filter:blur(14px);
+      align-items:center;justify-content:center;padding:20px}
+    .sum-overlay.open{display:flex}
+    .sum-modal{background:linear-gradient(145deg,#110e1a,#181326);
+      border:1px solid var(--border);border-radius:26px;padding:44px 40px;
+      width:100%;max-width:540px;position:relative;
+      box-shadow:0 0 100px rgba(168,85,247,.25);animation:sum-in .3s ease}
+    @keyframes sum-in{from{opacity:0;transform:scale(.94) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .sum-close{position:absolute;top:18px;right:20px;background:none;border:none;
+      color:var(--muted);font-size:1.5rem;cursor:pointer;transition:color .15s;line-height:1}
+    .sum-close:hover{color:var(--text)}
+    .sum-header{text-align:center;margin-bottom:32px}
+    .sum-icon{width:64px;height:64px;border-radius:20px;
+      background:linear-gradient(135deg,#a855f7,#7c3aed);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.8rem;margin:0 auto 16px;
+      box-shadow:0 0 40px #a855f740}
+    .sum-title{font-size:1.5rem;font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+    .sum-sub{font-size:.82rem;color:var(--muted)}
+    .sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+    .sum-card{background:linear-gradient(145deg,var(--surface),var(--surface2));
+      border:1px solid var(--border);border-radius:16px;padding:18px 20px;
+      transition:border-color .25s}
+    .sum-card:hover{border-color:#a855f740}
+    .sum-card-icon{font-size:1.2rem;margin-bottom:8px;opacity:.85}
+    .sum-card-label{font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;
+      color:var(--muted);font-weight:600;margin-bottom:4px}
+    .sum-card-val{font-size:1.6rem;font-weight:800;letter-spacing:-.04em}
+    .sum-card-val.purple{color:var(--accent)}
+    .sum-card-val.green{color:var(--green)}
+    .sum-card-val.red{color:var(--red)}
+    .sum-card-val.yellow{color:var(--yellow)}
+    .sum-card-val.cyan{color:var(--cyan)}
+    .sum-peak{background:linear-gradient(135deg,#2d1b6940,#1a1030);
+      border:1px solid #a855f730;border-radius:14px;padding:14px 18px;
+      text-align:center;font-size:.82rem;color:var(--muted);margin-bottom:20px}
+    .sum-peak b{color:var(--accent)}
+    .sum-actions{display:flex;gap:10px}
+    .sum-btn{flex:1;padding:12px;border-radius:12px;font-family:'Inter',sans-serif;
+      font-size:.85rem;font-weight:700;cursor:pointer;border:1px solid var(--border);
+      background:var(--surface2);color:var(--text);transition:all .18s}
+    .sum-btn:hover{border-color:var(--accent);color:var(--accent);background:#1a0f30}
+    .sum-btn.primary{background:linear-gradient(135deg,#a855f7,#7c3aed);
+      border-color:transparent;color:#fff;box-shadow:0 0 20px #a855f730}
+    .sum-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 30px #a855f750}
   </style>
 </head>
 <body>
@@ -176,7 +224,7 @@ DASHBOARD_HTML = """
     <div class="brand">
       <div class="brand-icon">&#x1F6A6;</div>
       <div>
-        <h1>Traffic Intelligence</h1>
+        <h1>TraffiQ</h1>
         <p>Real-time analysis &middot; localhost:5050</p>
       </div>
     </div>
@@ -187,6 +235,7 @@ DASHBOARD_HTML = """
       </div>
       <button class="btn" id="btn-pause" onclick="togglePause()">&#x23F8;&#xFE0F; Pause</button>
       <button class="btn btn-export" onclick="exportData()">&#x2B07;&#xFE0F; Export JSON</button>
+      <button class="btn" onclick="openSummary()" style="border-color:#a855f740;color:var(--accent)">&#x1F4CB; Session Summary</button>
       <a href="/logout" class="btn danger" style="text-decoration:none">&#x1F6AA; Logout</a>
     </div>
   </header>
@@ -282,7 +331,58 @@ DASHBOARD_HTML = """
     </div>
   </div>
 
-  <div class="footer">Traffic Intelligence Dashboard &mdash; <a href="/api/stats">JSON API</a> &middot; <a href="/api/history">History API</a></div>
+  <div class="footer">TraffiQ Dashboard &mdash; <a href="/api/stats">JSON API</a> &middot; <a href="/api/history">History API</a> &middot; <a href="/api/summary">Summary API</a></div>
+</div>
+
+<!-- SESSION SUMMARY MODAL -->
+<div class="sum-overlay" id="sum-overlay" onclick="if(event.target===this)closeSummary()">
+  <div class="sum-modal">
+    <button class="sum-close" onclick="closeSummary()">&#x00D7;</button>
+    <div class="sum-header">
+      <div class="sum-icon">&#x1F4CB;</div>
+      <div class="sum-title">Session Summary</div>
+      <div class="sum-sub" id="sum-sub">Loading session data&hellip;</div>
+    </div>
+    <div class="sum-grid">
+      <div class="sum-card">
+        <div class="sum-card-icon">&#x23F1;&#xFE0F;</div>
+        <div class="sum-card-label">Duration</div>
+        <div class="sum-card-val purple" id="sum-duration">—</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-card-icon">&#x1F697;</div>
+        <div class="sum-card-label">Total Vehicles</div>
+        <div class="sum-card-val cyan" id="sum-vehicles">—</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-card-icon">&#x1F6A8;</div>
+        <div class="sum-card-label">Speeders Caught</div>
+        <div class="sum-card-val red" id="sum-speeders">—</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-card-icon">&#x26A0;&#xFE0F;</div>
+        <div class="sum-card-label">Incidents Flagged</div>
+        <div class="sum-card-val yellow" id="sum-incidents">—</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-card-icon">&#x1F504;</div>
+        <div class="sum-card-label">Wrong-Way Vehicles</div>
+        <div class="sum-card-val red" id="sum-wrongway">—</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-card-icon">&#x1F697;&#x1F4A8;</div>
+        <div class="sum-card-label">Tailgate Events</div>
+        <div class="sum-card-val yellow" id="sum-tailgate">—</div>
+      </div>
+    </div>
+    <div class="sum-peak" id="sum-peak-row">
+      &#x1F3C6; Peak Traffic: <b id="sum-peak-count">—</b> vehicles at <b id="sum-peak-time">—</b>
+    </div>
+    <div class="sum-actions">
+      <button class="sum-btn" onclick="exportSummary()">&#x2B07;&#xFE0F; Export JSON</button>
+      <button class="sum-btn primary" onclick="closeSummary()">&#x2714; Got it</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -526,7 +626,56 @@ function selectLane(lid){
   if(lastData.s) renderData(lastData.s, lastData.hist);
 }
 
-poll(); setInterval(poll,2000);
+// ── SESSION SUMMARY MODAL ──
+let lastSummary = {};
+let sessionEndedNotified = false;
+
+async function fetchSummary(){
+  try{
+    const r = await fetch('/api/summary');
+    if(!r.ok) return;
+    const d = await r.json();
+    lastSummary = d;
+    // Auto-open when session ends (Q pressed in OpenCV window)
+    if(d.session_ended && !sessionEndedNotified){
+      sessionEndedNotified = true;
+      openSummary();
+    }
+  } catch(e){}
+}
+
+function openSummary(){
+  fetchSummary().then(()=>{
+    const d = lastSummary;
+    document.getElementById('sum-duration').textContent  = d.duration   ?? '—';
+    document.getElementById('sum-vehicles').textContent  = d.total_vehicles ?? '—';
+    document.getElementById('sum-speeders').textContent  = d.speeders   ?? '—';
+    document.getElementById('sum-incidents').textContent = d.total_incidents ?? '—';
+    document.getElementById('sum-wrongway').textContent  = d.wrong_way  ?? '—';
+    document.getElementById('sum-tailgate').textContent  = d.tailgate_events ?? '—';
+    document.getElementById('sum-peak-count').textContent = d.peak_count ?? '—';
+    document.getElementById('sum-peak-time').textContent  = d.peak_time  || 'N/A';
+    document.getElementById('sum-sub').textContent = 'Started at ' + (d.session_start ?? '—');
+    document.getElementById('sum-overlay').classList.add('open');
+  });
+}
+
+function closeSummary(){
+  document.getElementById('sum-overlay').classList.remove('open');
+}
+
+function exportSummary(){
+  const blob = new Blob([JSON.stringify(lastSummary, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'session_summary_' + new Date().toISOString().slice(0,19).replace(/:/g,'-') + '.json';
+  a.click();
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape') closeSummary(); });
+
+poll(); setInterval(poll, 2000);
+setInterval(fetchSummary, 3000);
 </script>
 </body></html>
 """
@@ -535,7 +684,7 @@ LANDING_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Traffic Intelligence &mdash; AI-Powered Traffic Analysis</title>
+  <title>TraffiQ &mdash; AI-Powered Traffic Analysis</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <style>
@@ -648,12 +797,12 @@ LANDING_HTML = """<!DOCTYPE html>
 </head>
 <body>
 <nav>
-  <a class="nav-brand" href="/"><div class="nav-icon">&#x1F6A6;</div><span class="nav-title">Traffic Intelligence</span></a>
+  <a class="nav-brand" href="/"><div class="nav-icon">&#x1F6A6;</div><span class="nav-title">TraffiQ</span></a>
   <button class="nav-btn" onclick="openLogin()">&#x1F511; Login to Dashboard</button>
 </nav>
 <div class="hero">
   <div class="hero-badge"><span class="hero-badge-dot"></span>AI-Powered &middot; Real-Time &middot; YOLOv8</div>
-  <h1>Next-Gen <span>Traffic Intelligence</span><br>at Your Fingertips</h1>
+  <h1>Next-Gen <span>TraffiQ</span><br>at Your Fingertips</h1>
   <p class="hero-sub">Professional-grade traffic analysis powered by YOLOv8 + ByteTrack. Real-time detection, speed analysis, incident alerts and adaptive signals in a live dashboard.</p>
   <div class="hero-btns">
     <button class="btn-primary" onclick="openLogin()">&#x1F680; Open Dashboard</button>
@@ -695,7 +844,7 @@ LANDING_HTML = """<!DOCTYPE html>
     <div class="metric-card"><div class="metric-card-icon">&#x1F4CA;</div><div class="metric-card-val">2 Min</div><div class="metric-card-label">History Chart</div></div>
   </div>
 </div>
-<footer>Traffic Intelligence &mdash; AI-Powered Traffic Analysis &middot; Built with YOLOv8 + ByteTrack + Flask
+<footer>TraffiQ &mdash; AI-Powered Traffic Analysis &middot; Built with YOLOv8 + ByteTrack + Flask
   <span style="color:#a855f7;margin-left:8px">&#x2665; By Varnit</span>
 </footer>
 <div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeLogin()">

@@ -1,4 +1,4 @@
-# 🚦 Traffic Intelligence — AI-Powered Traffic Analysis System
+# 🚦 TraffiQ — AI-Powered Traffic Analysis System
 
 A professional-grade real-time traffic analysis system built with **YOLOv8**, **ByteTrack**, and **Flask**. Detects and tracks vehicles across user-defined lanes, computes per-lane statistics, flags incidents, measures speeds, and displays everything in a live web dashboard with a purple-black gradient UI.
 
@@ -25,8 +25,8 @@ A professional-grade real-time traffic analysis system built with **YOLOv8**, **
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/YOUR_USERNAME/traffic-intelligence.git
-cd traffic-intelligence
+git clone https://github.com/YOUR_USERNAME/traffiq.git
+cd traffiq
 ```
 
 ### 2. Install dependencies
@@ -75,7 +75,7 @@ Then open **http://localhost:5050** in your browser.
 ## 📁 Project Structure
 
 ```
-traffic-intelligence/
+traffiq/
 ├── main.py             # Main entry point & video processing loop
 ├── config.py           # Configuration variables and thresholds
 ├── state.py            # Thread-safe shared state & stats tracking
