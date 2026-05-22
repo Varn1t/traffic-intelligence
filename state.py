@@ -1,6 +1,7 @@
 import threading
 from collections import deque
 from datetime import datetime
+from config import SPEED_LIMIT_KMPH, INCIDENT_TIMEOUT, CONF_THRESHOLD
 
 # ──────────────────────────────────────────────
 # SHARED STATE  (Flask ↔ OpenCV thread-safe)
@@ -24,7 +25,9 @@ shared_state = {
     "tailgating":    [],   # list of {id_a, id_b, lane} this frame
     "lane_predictions": {},  # {lane_id_str: predicted_count_in_15s}
     "ml_ready":      False,  # True once RF model has trained
-    "speed_limit":   None,   # expose config for dashboard
+    "speed_limit":   SPEED_LIMIT_KMPH,   # expose config for dashboard
+    "incident_timeout": INCIDENT_TIMEOUT,
+    "conf_threshold": CONF_THRESHOLD,
 }
 state_lock = threading.Lock()
 

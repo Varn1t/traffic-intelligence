@@ -214,6 +214,222 @@ DASHBOARD_HTML = """
     .sum-btn.primary{background:linear-gradient(135deg,#a855f7,#7c3aed);
       border-color:transparent;color:#fff;box-shadow:0 0 20px #a855f730}
     .sum-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 30px #a855f750}
+
+    /* ── CONTROL PANEL SIDEBAR ── */
+    .ctrl-toggle-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4), 0 0 0 0px rgba(168, 85, 247, 0.2);
+      z-index: 100;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .ctrl-toggle-btn:hover {
+      transform: scale(1.1) rotate(45deg);
+      box-shadow: 0 6px 24px rgba(168, 85, 247, 0.6), 0 0 20px rgba(168, 85, 247, 0.4);
+    }
+    .ctrl-toggle-btn.open {
+      transform: scale(0.9) rotate(-95deg);
+      background: #110e1a;
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.2);
+    }
+
+    .ctrl-sidebar {
+      position: fixed;
+      top: 0;
+      right: -360px;
+      width: 360px;
+      height: 100vh;
+      background: rgba(17, 14, 26, 0.75);
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      border-left: 1px solid rgba(168, 85, 247, 0.2);
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+      z-index: 99;
+      transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      padding: 40px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      overflow-y: auto;
+    }
+    .ctrl-sidebar.open {
+      right: 0;
+    }
+
+    .ctrl-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+    }
+    .ctrl-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ctrl-title-icon {
+      font-size: 1.3rem;
+      color: var(--accent);
+    }
+    .ctrl-close-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .ctrl-close-btn:hover {
+      color: var(--text);
+    }
+
+    .ctrl-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ctrl-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ctrl-label span.val-display {
+      color: var(--accent);
+      font-family: monospace;
+      font-size: 0.8rem;
+      font-weight: 800;
+      background: rgba(168, 85, 247, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(168, 85, 247, 0.2);
+    }
+
+    /* Segmented Mode Picker */
+    .ctrl-mode-picker {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .ctrl-mode-btn {
+      padding: 12px 8px;
+      border-radius: 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--surface2);
+      color: var(--muted);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .ctrl-mode-btn:hover {
+      border-color: rgba(168, 85, 247, 0.5);
+      color: var(--text);
+      background: #1a0f3050;
+    }
+    .ctrl-mode-btn.active {
+      border-color: var(--accent);
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(124, 58, 237, 0.1));
+      color: var(--accent);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.15);
+    }
+    .ctrl-mode-btn-icon {
+      font-size: 1.2rem;
+    }
+
+    /* Sliders Styling */
+    .slider-container {
+      position: relative;
+      width: 100%;
+    }
+    .ctrl-slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--border);
+      outline: none;
+      transition: background 0.3s;
+    }
+    .ctrl-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+      transition: transform 0.15s;
+    }
+    .ctrl-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.7);
+    }
+    .ctrl-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+      transition: transform 0.15s;
+    }
+    .ctrl-slider::-moz-range-thumb:hover {
+      transform: scale(1.2);
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.7);
+    }
+
+    .ctrl-desc {
+      font-size: 0.68rem;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+
+    /* Background overlay to dim dashboard when sidebar is open */
+    .ctrl-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 98;
+      background: rgba(8, 6, 14, 0.4);
+      backdrop-filter: blur(4px);
+      transition: opacity 0.3s;
+    }
+    .ctrl-overlay.open {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -332,6 +548,70 @@ DASHBOARD_HTML = """
   </div>
 
   <div class="footer">TraffiQ Dashboard &mdash; <a href="/api/stats">JSON API</a> &middot; <a href="/api/history">History API</a> &middot; <a href="/api/summary">Summary API</a></div>
+</div>
+
+<!-- CONTROL PANEL SIDEBAR & OVERLAY -->
+<div class="ctrl-overlay" id="ctrl-overlay" onclick="toggleSidebar()"></div>
+
+<button class="ctrl-toggle-btn" id="ctrl-toggle-btn" onclick="toggleSidebar()" title="Control Panel">⚙️</button>
+
+<div class="ctrl-sidebar" id="ctrl-sidebar">
+  <div class="ctrl-header">
+    <div class="ctrl-title"><span class="ctrl-title-icon">⚙️</span>Control Panel</div>
+    <button class="ctrl-close-btn" onclick="toggleSidebar()">&times;</button>
+  </div>
+
+  <!-- Cooldown Warning Banner -->
+  <div id="ctrl-cooldown-warn" style="display:none; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.3); color:#fcd34d; border-radius:10px; padding:10px 14px; font-size:0.75rem; font-weight:600; text-align:center; transition: all 0.3s ease;">
+    ⚠️ Please wait 5 seconds before you change
+  </div>
+
+  <!-- visualization mode -->
+  <div class="ctrl-section">
+    <div class="ctrl-label">Visualization Mode</div>
+    <div class="ctrl-mode-picker">
+      <button class="ctrl-mode-btn" id="mbtn-lanes" onclick="setMode('lanes')">
+        <span class="ctrl-mode-btn-icon">🛣️</span>Lanes
+      </button>
+      <button class="ctrl-mode-btn" id="mbtn-heatmap" onclick="setMode('heatmap')">
+        <span class="ctrl-mode-btn-icon">🔥</span>Heatmap
+      </button>
+      <button class="ctrl-mode-btn" id="mbtn-speed" onclick="setMode('speed')">
+        <span class="ctrl-mode-btn-icon">🏎️</span>Speed
+      </button>
+      <button class="ctrl-mode-btn" id="mbtn-timer" onclick="setMode('timer')">
+        <span class="ctrl-mode-btn-icon">⏱️</span>Timer
+      </button>
+    </div>
+    <div class="ctrl-desc">Toggles the primary analysis visualization overlay rendered on the live video stream.</div>
+  </div>
+
+  <!-- speed limit slider -->
+  <div class="ctrl-section">
+    <div class="ctrl-label">Speed Trigger Limit <span class="val-display" id="val-speed-limit">60 km/h</span></div>
+    <div class="slider-container">
+      <input type="range" class="ctrl-slider" id="slider-speed-limit" min="20" max="120" step="5" value="60" oninput="onSliderInput('speed-limit', this.value + ' km/h', 'speed_limit')" onchange="onSliderChange('speed_limit', this.value)">
+    </div>
+    <div class="ctrl-desc">Adjust speeding camera trigger limit. Vehicles exceeding this speed are logged as speed violations.</div>
+  </div>
+
+  <!-- incident timeout slider -->
+  <div class="ctrl-section">
+    <div class="ctrl-label">Incident Timeout <span class="val-display" id="val-incident-timeout">5s</span></div>
+    <div class="slider-container">
+      <input type="range" class="ctrl-slider" id="slider-incident-timeout" min="2" max="30" step="1" value="5" oninput="onSliderInput('incident-timeout', this.value + 's', 'incident_timeout')" onchange="onSliderChange('incident_timeout', this.value)">
+    </div>
+    <div class="ctrl-desc">Adjust threshold duration for stopped vehicle incident alerts (2s to 30s).</div>
+  </div>
+
+  <!-- confidence threshold slider -->
+  <div class="ctrl-section">
+    <div class="ctrl-label">Detection Confidence <span class="val-display" id="val-conf-threshold">0.50</span></div>
+    <div class="slider-container">
+      <input type="range" class="ctrl-slider" id="slider-conf-threshold" min="0.10" max="0.95" step="0.05" value="0.50" oninput="onSliderInput('conf-threshold', parseFloat(this.value).toFixed(2), 'conf_threshold')" onchange="onSliderChange('conf_threshold', this.value)">
+    </div>
+    <div class="ctrl-desc">YOLOv8 confidence score filter. Higher filters noise; lower detects tiny or partially occluded vehicles.</div>
+  </div>
 </div>
 
 <!-- SESSION SUMMARY MODAL -->
@@ -585,6 +865,9 @@ function renderData(s, hist) {
 
   // Chart
   updateChart(hist);
+  
+  // Sync remote controls
+  syncControlUI(s);
 }
 
 async function poll(){
@@ -624,6 +907,174 @@ function selectLane(lid){
   if(String(selectedLane)===String(lid)){selectedLane=null;}
   else{selectedLane=lid;}
   if(lastData.s) renderData(lastData.s, lastData.hist);
+}
+
+// ── CONTROL PANEL SIDEBAR LOGIC ──
+let sidebarOpen = false;
+
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  const sidebar = document.getElementById('ctrl-sidebar');
+  const btn = document.getElementById('ctrl-toggle-btn');
+  const overlay = document.getElementById('ctrl-overlay');
+  
+  if (sidebarOpen) {
+    sidebar.classList.add('open');
+    btn.classList.add('open');
+    btn.innerHTML = '&times;'; // Close symbol when open
+    overlay.classList.add('open');
+  } else {
+    sidebar.classList.remove('open');
+    btn.classList.remove('open');
+    btn.innerHTML = '⚙️'; // Gear symbol when closed
+    overlay.classList.remove('open');
+  }
+}
+
+async function updateRemoteControls(settings) {
+  try {
+    const r = await fetch('/api/control/update', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings)
+    });
+    if(!r.ok) console.error('Failed to update remote controls');
+  } catch(e) {
+    console.error('Update controls error:', e);
+  }
+}
+
+let lastChangeTime = 0;
+let warningTimeout = null;
+
+function showCooldownWarning() {
+  const warnBanner = document.getElementById('ctrl-cooldown-warn');
+  if (warnBanner) {
+    warnBanner.style.display = 'block';
+    if (warningTimeout) clearTimeout(warningTimeout);
+    warningTimeout = setTimeout(() => {
+      warnBanner.style.display = 'none';
+    }, 5000);
+  }
+}
+
+function setMode(m) {
+  const now = Date.now();
+  if (now - lastChangeTime < 5000 && lastChangeTime > 0) {
+    showCooldownWarning();
+    // Revert button to backend value
+    if (lastData.s && lastData.s.mode != null) {
+      const activeMode = lastData.s.mode || 'lanes';
+      ['lanes', 'heatmap', 'speed', 'timer'].forEach(mode => {
+        const btn = document.getElementById('mbtn-' + mode);
+        if(btn) {
+          if(mode === activeMode) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      });
+    }
+    return;
+  }
+  
+  lastChangeTime = now;
+  lastUserInteraction.mode = now;
+  
+  // Optimistically highlight mode button
+  ['lanes', 'heatmap', 'speed', 'timer'].forEach(mode => {
+    const btn = document.getElementById('mbtn-' + mode);
+    if(btn) {
+      if(mode === m) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+  
+  updateRemoteControls({ mode: m });
+}
+
+const lastUserInteraction = { speed_limit: 0, incident_timeout: 0, conf_threshold: 0, mode: 0 };
+
+function onSliderInput(id, valText, field) {
+  if (field) lastUserInteraction[field] = Date.now();
+  const displayEl = document.getElementById('val-' + id);
+  if (displayEl) {
+    displayEl.textContent = valText;
+  }
+}
+
+function onSliderChange(field, val) {
+  const now = Date.now();
+  if (now - lastChangeTime < 5000 && lastChangeTime > 0) {
+    showCooldownWarning();
+    // Revert slider to backend value
+    if (lastData.s && lastData.s[field] != null) {
+      const slider = document.getElementById('slider-' + field.replace('_', '-'));
+      const valText = document.getElementById('val-' + field.replace('_', '-'));
+      if (slider) {
+        slider.value = lastData.s[field];
+        if (valText) {
+          if (field === 'speed_limit') valText.textContent = lastData.s[field] + ' km/h';
+          else if (field === 'incident_timeout') valText.textContent = lastData.s[field] + 's';
+          else valText.textContent = parseFloat(lastData.s[field]).toFixed(2);
+        }
+      }
+    }
+    return;
+  }
+  
+  lastChangeTime = now;
+  lastUserInteraction[field] = now;
+  
+  let parsedVal = val;
+  if (field === 'speed_limit') parsedVal = parseInt(val);
+  else if (field === 'incident_timeout' || field === 'conf_threshold') parsedVal = parseFloat(val);
+  
+  const obj = {};
+  obj[field] = parsedVal;
+  updateRemoteControls(obj);
+}
+
+function syncControlUI(s) {
+  const now = Date.now();
+
+  // Mode Button Highlight (with 5-second lockout)
+  const activeMode = s.mode || 'lanes';
+  const modeLockout = (now - lastUserInteraction.mode) < 5000;
+  if (!modeLockout) {
+    ['lanes', 'heatmap', 'speed', 'timer'].forEach(m => {
+      const btn = document.getElementById('mbtn-' + m);
+      if(btn) {
+        if(m === activeMode) btn.classList.add('active');
+        else btn.classList.remove('active');
+      }
+    });
+  }
+
+  // Speed limit slider (with 5-second lockout)
+  const speedSlider = document.getElementById('slider-speed-limit');
+  const speedVal = document.getElementById('val-speed-limit');
+  const speedLockout = (now - lastUserInteraction.speed_limit) < 5000;
+  if(speedSlider && document.activeElement !== speedSlider && !speedLockout && s.speed_limit != null) {
+    speedSlider.value = s.speed_limit;
+    if(speedVal) speedVal.textContent = s.speed_limit + ' km/h';
+  }
+
+  // Incident timeout slider (with 5-second lockout)
+  const incSlider = document.getElementById('slider-incident-timeout');
+  const incVal = document.getElementById('val-incident-timeout');
+  const incLockout = (now - lastUserInteraction.incident_timeout) < 5000;
+  if(incSlider && document.activeElement !== incSlider && !incLockout && s.incident_timeout != null) {
+    incSlider.value = s.incident_timeout;
+    if(incVal) incVal.textContent = s.incident_timeout + 's';
+  }
+
+  // Confidence threshold slider (with 5-second lockout)
+  const confSlider = document.getElementById('slider-conf-threshold');
+  const confVal = document.getElementById('val-conf-threshold');
+  const confLockout = (now - lastUserInteraction.conf_threshold) < 5000;
+  if(confSlider && document.activeElement !== confSlider && !confLockout && s.conf_threshold != null) {
+    confSlider.value = s.conf_threshold;
+    if(confVal) confVal.textContent = parseFloat(s.conf_threshold).toFixed(2);
+  }
 }
 
 // ── SESSION SUMMARY MODAL ──
@@ -672,7 +1123,12 @@ function exportSummary(){
   a.click();
 }
 
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeSummary(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeSummary();
+    if (sidebarOpen) toggleSidebar();
+  }
+});
 
 poll(); setInterval(poll, 2000);
 setInterval(fetchSummary, 3000);

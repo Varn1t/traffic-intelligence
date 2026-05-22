@@ -155,8 +155,15 @@ def main():
         fps = 1.0 / max(now - fps_timer, 1e-9)
         fps_timer = now
 
+        # ── LOAD DYNAMIC CONTROLS FROM SHARED STATE ──
+        with state_lock:
+            mode = shared_state["mode"]
+            speed_limit = shared_state["speed_limit"]
+            incident_timeout = shared_state["incident_timeout"]
+            conf_threshold = shared_state["conf_threshold"]
+
         # ── YOLO DETECT ──
-        results = model(frame, conf=CONF_THRESHOLD, verbose=False)[0]
+        results = model(frame, conf=conf_threshold, verbose=False)[0]
 
         # Filter to vehicle classes only
         vehicle_mask = np.array([
@@ -216,7 +223,7 @@ def main():
                     speed_kmh = (dist_px * PIXEL_TO_METER / dt) * 3.6
 
             # ── SPEED CAMERA ──
-            if speed_kmh > SPEED_LIMIT_KMPH:
+            if speed_kmh > speed_limit:
                 event = speeder_logger.log(frame_id, track_id, lane_id, speed_kmh, label)
                 if event:
                     frame_speeders.append(event)
@@ -231,7 +238,7 @@ def main():
                 emergency_lane_this_frame = lane_id
 
             # Incident detection
-            is_incident = lane_id and incident_detector.update(track_id, cx, cy, lane_id)
+            is_incident = lane_id and incident_detector.update(track_id, cx, cy, lane_id, timeout=incident_timeout)
             if is_incident:
                 still_since = incident_detector.history[track_id]["still_since"]
                 duration = round(time.time() - still_since, 1)
@@ -243,7 +250,7 @@ def main():
                 cv2.rectangle(frame, (x1,y1), (x2,y2), (0,0,255), 3)
                 cv2.putText(frame, f"INCIDENT! {duration}s", (x1, y1-10),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,0,255), 2)
-            elif speed_kmh <= SPEED_LIMIT_KMPH:  # don't overwrite speeding box
+            elif speed_kmh <= speed_limit:  # don't overwrite speeding box
                 # Normal annotation with speed
                 color = (0,255,0)
                 cv2.rectangle(frame, (x1,y1), (x2,y2), color, 2)
@@ -458,7 +465,6 @@ def main():
             shared_state["lane_counts"]       = {str(k): dict(v) for k, v in lane_counts.items()}
             shared_state["vehicle_count"]     = total_vehicles
             shared_state["incidents"]         = active_incidents
-            shared_state["mode"]              = mode
             shared_state["fps"]               = round(fps, 1)
             shared_state["frame_id"]          = frame_id
             shared_state["emergency_active"]  = emergency_lane_this_frame is not None
@@ -471,7 +477,6 @@ def main():
             shared_state["tailgating"]        = list(frame_tailgating)[:5]  # cap at 5
             shared_state["lane_predictions"]  = {str(k): round(predictor.predict(k), 1) for k in lane_counts}
             shared_state["ml_ready"]          = predictor.is_ready()
-            shared_state["speed_limit"]       = SPEED_LIMIT_KMPH
             # Keep last 10 speeding events
             if frame_speeders:
                 shared_state["speeders"] = (shared_state["speeders"] + frame_speeders)[-10:]
@@ -485,13 +490,13 @@ def main():
         cv2.imshow("Traffic Analysis  [L/H/S/T]  Q=quit", frame)
         key = cv2.waitKey(30) & 0xFF   # 30ms gives reliable key capture
         if key == ord("l"):
-            mode = "lanes"
+            with state_lock: shared_state["mode"] = "lanes"
         elif key == ord("h"):
-            mode = "heatmap"
+            with state_lock: shared_state["mode"] = "heatmap"
         elif key == ord("s"):
-            mode = "speed"
+            with state_lock: shared_state["mode"] = "speed"
         elif key == ord("t"):
-            mode = "timer"
+            with state_lock: shared_state["mode"] = "timer"
         elif key == ord("q") or key == 27:   # Q or Esc
             break
         # Check if window was closed (WND_PROP_AUTOSIZE is reliable cross-platform)

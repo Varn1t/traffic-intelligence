@@ -1,4 +1,5 @@
 import os
+import secrets
 import logging
 from dotenv import load_dotenv
 load_dotenv()
@@ -9,7 +10,7 @@ from datetime import datetime
 from templates import DASHBOARD_HTML, LANDING_HTML
 
 app = Flask(__name__)
-app.secret_key = "bd8b6b2fa790d9841f3ee91e65ba6cf781a7db1ef4d0b04a"
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", secrets.token_hex(24))
 
 DASH_USER = os.environ.get("DASH_USER", "admin")
 DASH_PASS = os.environ.get("DASH_PASS", "changeme")
@@ -78,6 +79,22 @@ def api_summary():
         "session_start":   start_str,
         "session_ended":   session_stats.session_ended,
     })
+
+@app.route("/api/control/update", methods=["POST"])
+def update_controls():
+    if not session.get("authenticated"):
+        return jsonify({"error": "Unauthorized"}), 401
+    data = request.get_json() or {}
+    with state_lock:
+        if "mode" in data:
+            shared_state["mode"] = str(data["mode"])
+        if "speed_limit" in data:
+            shared_state["speed_limit"] = int(data["speed_limit"])
+        if "incident_timeout" in data:
+            shared_state["incident_timeout"] = float(data["incident_timeout"])
+        if "conf_threshold" in data:
+            shared_state["conf_threshold"] = float(data["conf_threshold"])
+    return jsonify({"status": "success", "settings": data})
 
 def run_flask():
     log = logging.getLogger("werkzeug")

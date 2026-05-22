@@ -25,8 +25,9 @@ class IncidentDetector:
     def __init__(self):
         self.history: dict[int, _IncidentEntry] = {}  # track_id → entry
 
-    def update(self, track_id: int, cx: int, cy: int, lane_id: int) -> bool:
+    def update(self, track_id: int, cx: int, cy: int, lane_id: int, timeout: float = None) -> bool:
         now = time.time()
+        effective_timeout = timeout if timeout is not None else INCIDENT_TIMEOUT
         if track_id not in self.history:
             self.history[track_id] = {"pos": (cx, cy), "still_since": now, "lane": lane_id}
             return False
@@ -38,7 +39,7 @@ class IncidentDetector:
             return False
         else:
             still_for = now - prev["still_since"]
-            return still_for >= INCIDENT_TIMEOUT
+            return still_for >= effective_timeout
 
     def cleanup(self, active_ids: set):
         self.history = {k: v for k, v in self.history.items() if k in active_ids}
