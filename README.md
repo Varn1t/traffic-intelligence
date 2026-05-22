@@ -10,7 +10,7 @@ Featuring a premium, two-way interactive **Control Panel** allowing live paramet
 
 | Feature | Description |
 |---|---|
-| ⚙️ Interactive Control Panel | Collapsible glassmorphic sidebar for live web-based parameter configuration |
+| ⚙️ Interactive Control Panel | Collapsible sidebar for live web-based parameter configuration |
 | 🎯 Multi-Object Tracking | ByteTrack algorithm with unique vehicle IDs |
 | ⚡ Lane-Level Analytics | Per-lane counts, Level of Service (LOS) A–F grading, flow rate, queue length |
 | 📷 Speed Camera | Pixel-to-meter calibrated speed estimation + dynamic speeding cameras + CSV logging |
